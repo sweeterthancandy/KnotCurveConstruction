@@ -167,17 +167,18 @@ private:
         RealType rate_;
         double periods_;
 };
-struct FraResidue : KnotSolver::Residue{
+struct FraRate : KnotSolver::Residue{
         enum{ Debug =0 };
-        FraResidue(Date d, RealType quote)
+        FraRate(Date d, RealType quote, std::string const& curve)
                 :d_(d),
-                quote_(quote)
+                quote_(quote),
+                curve_(curve)
         {}
         virtual RealType Calc(KnotCollection& V, bool debug )const{
                 static QuantLib::Period p(3, Months);
                 Date end = d_ + p;
-                RealType start_df = V.Curve("3mdf").Value( d_ );
-                RealType end_df   = V.Curve("3mdf").Value( end );
+                RealType start_df = V.Curve(curve_).Value( d_ );
+                RealType end_df   = V.Curve(curve_).Value( end );
 
 
                 RealType rate = ( start_df / end_df - 1.0 ) / ( end - d_ ) * 365 * 100.0;
@@ -199,6 +200,7 @@ struct FraResidue : KnotSolver::Residue{
 private:
         Date d_;
         RealType quote_;
+        std::string curve_;
 };
 
 #endif // KNOTS_RESIDUE_H
