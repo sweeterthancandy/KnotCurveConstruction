@@ -30,10 +30,22 @@
 using namespace QuantLib;
 
 // this is important
-using RealType = long double;
+using RealType = double;
 
 using MatrixType = Eigen::Matrix<RealType, Eigen::Dynamic, Eigen::Dynamic>;
 using VectorType = Eigen::Matrix<RealType, Eigen::Dynamic, 1>; 
+
+inline std::string ToString(VectorType const& V){
+        std::stringstream sstr;
+        sstr << std::fixed;
+        sstr << "<" << V.size() << ">";
+        sstr << "[";
+        for(size_t idx=0;idx<V.size();++idx){
+                sstr << (idx==0?"":", ") << V[idx];
+        }
+        sstr << "]";
+        return sstr.str();
+}
 
 struct Knot{
 

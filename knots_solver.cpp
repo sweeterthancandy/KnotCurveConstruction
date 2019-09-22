@@ -20,7 +20,12 @@ KnotCollection KnotSolver::Solve(KnotCollection k){
                 // sol = x_{n+1} - x_{n}
                 // sol + x_{n} = x_{n_1}
                 VectorType V = k.AsVector();
-                VectorType next = sol + V;
+
+                // now we have the direction V, we want to figure out the step lengh \alpha
+
+                double alpha = 0.5;
+                VectorType next = V + alpha * sol;
+
                 
 
                 RealType norm = sol.lpNorm<2>();
@@ -36,6 +41,29 @@ KnotCollection KnotSolver::Solve(KnotCollection k){
                 for(size_t idx=0;idx!=k.size();++idx){
                         k[idx].value = next(idx);
                 }
+                
+                if(0)
+                do{
+                        // wolfe condition
+                        //    f(x_i + \alpha_i P_k) <= f(x_i) + c_1 \alpha_k P^T_k \grad f(x_k)
+                        //    \\-- F_next --------/    \--F-/                \---- tmp ------/
+
+                        VectorType F_next = CalcResidue(k);
+
+                        double c_1   = 1.0;
+                        double alpha = 1.0;
+
+                        VectorType lhs = F_next - F;
+                        VectorType rhs = c_1 * alpha * V.transpose() * J;
+                        //VectorType res = F_next - F - c_1 * alpha * V.transpose() * J;
+
+
+                        SLOG(trace) << "lhs = " << ToString(lhs);
+                        SLOG(trace) << "rhs = " << ToString(rhs);
+                        VectorType res = lhs - rhs;
+                        SLOG(trace) << "res = " << ToString(res);
+
+                }while(0);
 
                 if( norm < 1e-5 ){
                         return k;

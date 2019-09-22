@@ -42,6 +42,15 @@ struct KnotSolver{
         KnotCollection Solve(KnotCollection k);
 private:
         std::vector<std::shared_ptr<Residue> > res_;
+        /*
+                Solving essentailly works by calculating
+                a direction vector V such that
+                        X_{i+1} = x_{i} + V,
+                however we normally want to satisfy the
+                wolfe conditions
+                        
+         */
+        double beta_parameter_;
 };
 
 #endif // KNOTS_SOLVER_H
